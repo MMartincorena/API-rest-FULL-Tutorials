@@ -71,6 +71,25 @@ public class TutorialController {
         }
     }
 
+    /**
+     * Función: getTutorialByPrice
+     * @param price
+     * Muestra la lista de tutoriales dependiendo del precio que fue ingresado.
+     */
+
+    @GetMapping("/tutorials/get_byPrice/{price}")
+    public ResponseEntity<List<Tutorial>> getTutorialByPrice(@PathVariable("price") Long price) {
+        List<Tutorial> tutorialsByPriceData = tutorialRepository.findByPrice(price);
+        try{
+            if (!tutorialsByPriceData.isEmpty()) {
+                return new ResponseEntity<>(tutorialsByPriceData, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
         Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
@@ -88,14 +107,13 @@ public class TutorialController {
     }
 
     /**
-     * Funcion: updateTutorialByTitle
+     * Función: updateTutorialByTitle
      * @param title
      * @param tutorial
-     * Modifica y luego actualiza la tabla a partir del titulo
-     *
+     * Modifica y luego actualiza la tabla a partir del título.
      */
 
-    @PutMapping("/tutorials/update_Title/{title}")
+    @PutMapping("/tutorials/updateTutorial_byTitle/{title}")
     public ResponseEntity<Tutorial> updateTutorialByTitle(@PathVariable("title") String title, @RequestBody Tutorial tutorial) {
         List<Tutorial> tutorialsByTitleData = tutorialRepository.findByTitle(title);
         try {
@@ -138,6 +156,25 @@ public class TutorialController {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
 
+    }
+
+    /**
+     * Función: deleteTutorialByTitle
+     * @param title
+     * Función la cual elimina una fila por título
+     */
+
+    @DeleteMapping("/tutorials/deleteTutorial_byTitle/{title}")
+    public ResponseEntity<String> deleteTutorialByTitle(@PathVariable("title") String title){
+        try{
+            List<Tutorial> tutorialDataByTitle = tutorialRepository.findByTitle(title);
+            for(Tutorial tutorial : tutorialDataByTitle){
+                tutorialRepository.deleteById(tutorial.getId());
+            }
+            return new ResponseEntity<>("Tutorials with title '"+title+"' deleted succesfully!", HttpStatus.NO_CONTENT);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
     @GetMapping("/tutorials/published")
