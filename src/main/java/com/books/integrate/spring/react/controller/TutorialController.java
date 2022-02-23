@@ -72,7 +72,7 @@ public class TutorialController {
     }
 
     /**
-     * Función: getTutorialByPrice
+     * Función: getTutorial_ByPrice
      * @param price
      * Muestra la lista de tutoriales dependiendo del precio que fue ingresado.
      */
